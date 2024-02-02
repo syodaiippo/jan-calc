@@ -211,11 +211,35 @@ export default function Home() {
         }, 0)
     }
 
+    const downloadJson = (exportJson: GameResult[]) => {
+        const fileName = "finename.json"
+        const data = new Blob([JSON.stringify(exportJson)], { type: "text/json" })
+        const jsonURL = window.URL.createObjectURL(data)
+        const link = document.createElement("a")
+        document.body.appendChild(link)
+        link.href = jsonURL
+        link.setAttribute("download", fileName)
+        link.click()
+        document.body.removeChild(link)
+    }
+
     return (
         <Stack h={"100%"} p={3}>
-            <Button variant={"solid"} w={"5rem"} colorScheme={"red"} onClick={newGame}>
-                newGame
-            </Button>
+            <HStack>
+                <Button variant={"solid"} w={"5rem"} colorScheme={"red"} onClick={newGame}>
+                    newGame
+                </Button>
+                <Button
+                    ms={"auto"}
+                    variant={"solid"}
+                    w={"5rem"}
+                    colorScheme={"blue"}
+                    isDisabled={!gameResults || !gameResults.length}
+                    onClick={e => downloadJson(gameResults)}
+                >
+                    getJson
+                </Button>
+            </HStack>
             <ResultTables players={players} gameResults={gameResults} />
             <Stack mt={"auto"} mb={4}>
                 <Stack>
