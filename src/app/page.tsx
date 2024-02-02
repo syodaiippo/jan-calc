@@ -216,6 +216,7 @@ export default function Home() {
             <Button variant={"solid"} w={"5rem"} colorScheme={"red"} onClick={newGame}>
                 newGame
             </Button>
+            {/* {gameResults.length && <ResultTables players={players} gameResults={gameResults} />} */}
             <ResultTables players={players} gameResults={gameResults} />
             <Stack mt={"auto"} mb={4}>
                 <Stack>
