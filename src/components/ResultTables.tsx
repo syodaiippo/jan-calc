@@ -37,21 +37,23 @@ const ResultTables = memo(function ResultTables(props: Props) {
     }, [props.gameResults])
 
     return (
-        <Box w={"100%"}>
-            <TableContainer overflowX="unset" overflowY="unset">
-                <Table variant="simple">
-                    <Thead position="sticky" top={0} zIndex="docked">
-                        <Tr>
+        <Box w={"100%"} h={"45%"}>
+            <TableContainer w={"100%"} h={"100%"} overflowX="unset" overflowY="scroll">
+                <Table>
+                    <Thead position="sticky" top={0} zIndex="docked" bgColor={"gray.100"}>
+                        <Tr px={1} py={1}>
                             {players.map(player => (
-                                <Th key={player.id}>{player.name}</Th>
+                                <Th px={1} py={1} key={player.id}>
+                                    {player.name}
+                                </Th>
                             ))}
                         </Tr>
                     </Thead>
                     <Tbody>
                         <ResultTr gameResults={grs} players={players} />
                     </Tbody>
-                    <Tfoot>
-                        <Tr>
+                    <Tfoot position="sticky" bottom={0} bgColor={"gray.100"}>
+                        <Tr px={1} py={1}>
                             {players.map(player => {
                                 const summary = summaryBases
                                     .filter(summaryBase => summaryBase.id == player.id)
@@ -59,7 +61,7 @@ const ResultTables = memo(function ResultTables(props: Props) {
                                     .reduce((sum, ele) => {
                                         return sum + ele
                                     }, 0)
-                                return <Th key={player.id}>{`${summary} / ${summary * 50}`}</Th>
+                                return <Th px={1} py={1} key={player.id}>{`${summary} / ${summary * 50}`}</Th>
                             })}
                         </Tr>
                     </Tfoot>
@@ -79,10 +81,14 @@ type ResultPtops = {
 const ResultTr = function ResultTr(props: ResultPtops) {
     return props.gameResults.map(gr => {
         return (
-            <Tr key={gr.count}>
+            <Tr px={1} py={1} key={gr.count}>
                 {props.players.map(player => {
                     const result = gr.results.filter(r => r.id == player.id)[0]
-                    return <Td key={result.id}>{result.point}</Td>
+                    return (
+                        <Td px={1} py={1} key={result.id}>
+                            {result.point}
+                        </Td>
+                    )
                 })}
             </Tr>
         )
