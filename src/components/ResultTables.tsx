@@ -1,5 +1,5 @@
 import { Player, GameResult } from "@/app/page"
-import { Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
+import { Box, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
 import React, { memo, useEffect, useState } from "react"
 
 type Props = {
@@ -37,33 +37,35 @@ const ResultTables = memo(function ResultTables(props: Props) {
     }, [props.gameResults])
 
     return (
-        <TableContainer overflowX="unset" overflowY="unset">
-            <Table variant="simple">
-                <Thead position="sticky" top={0} zIndex="docked">
-                    <Tr>
-                        {players.map(player => (
-                            <Th key={player.id}>{player.name}</Th>
-                        ))}
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    <ResultTr gameResults={grs} players={players} />
-                </Tbody>
-                <Tfoot>
-                    <Tr>
-                        {players.map(player => {
-                            const summary = summaryBases
-                                .filter(summaryBase => summaryBase.id == player.id)
-                                .map(summaryBase => summaryBase.point)
-                                .reduce((sum, ele) => {
-                                    return sum + ele
-                                }, 0)
-                            return <Th key={player.id}>{`${summary} / ${summary * 50}`}</Th>
-                        })}
-                    </Tr>
-                </Tfoot>
-            </Table>
-        </TableContainer>
+        <Box w={"100%"}>
+            <TableContainer overflowX="unset" overflowY="unset">
+                <Table variant="simple">
+                    <Thead position="sticky" top={0} zIndex="docked">
+                        <Tr>
+                            {players.map(player => (
+                                <Th key={player.id}>{player.name}</Th>
+                            ))}
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        <ResultTr gameResults={grs} players={players} />
+                    </Tbody>
+                    <Tfoot>
+                        <Tr>
+                            {players.map(player => {
+                                const summary = summaryBases
+                                    .filter(summaryBase => summaryBase.id == player.id)
+                                    .map(summaryBase => summaryBase.point)
+                                    .reduce((sum, ele) => {
+                                        return sum + ele
+                                    }, 0)
+                                return <Th key={player.id}>{`${summary} / ${summary * 50}`}</Th>
+                            })}
+                        </Tr>
+                    </Tfoot>
+                </Table>
+            </TableContainer>
+        </Box>
     )
 })
 
