@@ -6,7 +6,7 @@ type Props = {
     players: Player[]
     gameResults: GameResult[]
 }
-const ResultTables = memo((props: Props) => {
+const ResultTables = memo(function ResultTables(props: Props) {
     const { players, gameResults } = props
     const grs = gameResults.sort((a, b) => (a.count < b.count ? -1 : 1))
     return (
@@ -34,7 +34,7 @@ type ResultPtops = {
     gameResults: GameResult[]
     players: Player[]
 }
-const ResultTr = (props: ResultPtops) => {
+const ResultTr = function ResultTr(props: ResultPtops) {
     return props.gameResults.map(gr => {
         return (
             <Tr key={gr.count}>
