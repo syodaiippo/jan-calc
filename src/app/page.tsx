@@ -1,7 +1,8 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import config from "../../next.config.mjs";
-const BASE_PATH = config.basePath || ""; // 追加
+
+import config from "../../next.config.js"; // 追加
+const BASE_PATH = config.basePath ? config.basePath : ""; // 追加
 
 export default function Home() {
   return (
