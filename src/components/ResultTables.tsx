@@ -37,10 +37,10 @@ type ResultPtops = {
 const ResultTr = (props: ResultPtops) => {
     return props.gameResults.map(gr => {
         return (
-            <Tr>
+            <Tr key={gr.count}>
                 {props.players.map(player => {
                     const result = gr.results.filter(r => r.id == player.id)[0]
-                    return <Td>{result.point}</Td>
+                    return <Td key={result.id}>{result.point}</Td>
                 })}
             </Tr>
         )
