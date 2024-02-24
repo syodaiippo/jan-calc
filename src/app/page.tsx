@@ -297,14 +297,14 @@ export default function Home() {
                                 </Box>
                             ))}
                         </HStack>
-                        <Button ms={"auto"} w={"4.5rem"} onClick={allClear}>
-                            allClear
-                        </Button>
                     </HStack>
                 </Stack>
             </Stack>
-            <HStack gap={4} ms={"auto"}>
-                <HStack>
+            <HStack gap={4} w={"100%"}>
+                <Button w={"4.5rem"} variant={"outline"} colorScheme="red" onClick={allClear}>
+                    allClear
+                </Button>
+                <HStack ms={"auto"}>
                     <Button
                         variant={"outline"}
                         isDisabled={canNotCheck}
