@@ -1,9 +1,10 @@
 "use client"
 import { useState } from "react"
 import config from "../../next.config.js" // 追加
-import { Badge, Box, Button, HStack, Input, Radio, Stack, Text, VStack } from "@chakra-ui/react"
+import { Box, Button, HStack, Input, Radio, Stack, Text, VStack } from "@chakra-ui/react"
 import ResultTables from "@/components/ResultTables"
-import { BsX } from "react-icons/bs"
+import { BsXLg } from "react-icons/bs"
+import { IconContext } from "react-icons"
 const BASE_PATH = config.basePath ? config.basePath : "" // 追加
 
 export type Player = {
@@ -265,7 +266,6 @@ export default function Home() {
                             </Stack>
                             <Input
                                 p={1}
-                                w={"50%"}
                                 type="number"
                                 key={scores.filter(score => score.id == player.id)[0].score}
                                 defaultValue={scores.filter(score => score.id == player.id)[0].score}
@@ -278,8 +278,10 @@ export default function Home() {
                                     bgColor: "gray.300",
                                 }}
                             />
-                            <Button variant={"ghost"} onClick={e => deleteInput(player.id)}>
-                                <BsX />
+                            <Button variant={"ghost"} p={2} onClick={e => deleteInput(player.id)}>
+                                <IconContext.Provider value={{ size: "1.3rem" }}>
+                                    <BsXLg />
+                                </IconContext.Provider>
                             </Button>
                         </HStack>
                     ))}
