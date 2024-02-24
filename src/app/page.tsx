@@ -1,8 +1,9 @@
 "use client"
 import { useState } from "react"
 import config from "../../next.config.js" // 追加
-import { Box, Button, HStack, Input, Stack, Text } from "@chakra-ui/react"
+import { Badge, Box, Button, HStack, Input, Radio, Stack, Text, VStack } from "@chakra-ui/react"
 import ResultTables from "@/components/ResultTables"
+import { BsX } from "react-icons/bs"
 const BASE_PATH = config.basePath ? config.basePath : "" // 追加
 
 export type Player = {
@@ -12,6 +13,7 @@ export type Player = {
 type Score = {
     id: number
     score: number | undefined
+    isTop: boolean
 }
 type Result = {
     id: number
@@ -26,10 +28,10 @@ export type GameResult = {
 
 const createNewScore = (): Score[] => {
     return [
-        { id: 1, score: undefined },
-        { id: 2, score: undefined },
-        { id: 3, score: undefined },
-        { id: 4, score: undefined },
+        { id: 1, score: undefined, isTop: false },
+        { id: 2, score: undefined, isTop: false },
+        { id: 3, score: undefined, isTop: false },
+        { id: 4, score: undefined, isTop: false },
     ]
 }
 
@@ -111,22 +113,6 @@ export default function Home() {
             return score
         })
 
-        // 3人いれたら自動計算
-        const inputed = newScores.filter(score => score.score != undefined).map(score => score.score)
-        if (inputed.length == 3) {
-            const sumPoint = inputed.reduce((sum, ele) => {
-                if (sum != undefined && ele != undefined) {
-                    return sum + ele
-                }
-            }, 0)
-            newScores = newScores.map(newScore => {
-                if (newScore.score == undefined && sumPoint != undefined) {
-                    newScore.score = 25000 * 4 - sumPoint
-                }
-                return newScore
-            })
-        }
-
         setScores(newScores)
         setVerification()
     }
@@ -136,18 +122,11 @@ export default function Home() {
      * @returns void
      */
     const setVerification = (): void => {
-        if (scores.filter(score => score.score == undefined).length) {
+        if (scores.filter(score => score.score == undefined && !score.isTop).length) {
             setCanNotCheck(true)
             return
         }
-        const total = scores
-            .map(score => score.score)
-            .reduce((sum, ele) => {
-                if (sum != undefined && ele != undefined) {
-                    return sum + ele
-                }
-            }, 0)
-        setCanNotCheck(total != 25000 * 4)
+        setCanNotCheck(false)
     }
 
     /**
@@ -158,6 +137,7 @@ export default function Home() {
         const newScores = scores.map(score => {
             if (score.id == id) {
                 score.score = undefined
+                score.isTop = false
             }
             return score
         })
@@ -170,11 +150,16 @@ export default function Home() {
      * チェック実施
      */
     const doCheck = (): void => {
-        const sortScore = scores.sort((a, b) => ((a.score || 0) < (b.score || 0) ? -1 : 1)) // 昇順
+        const top = scores.filter(score => score.isTop)
+        const untop = scores.filter(score => !score.isTop)
+        const sortScore = untop.sort((a, b) => ((a.score || 0) < (b.score || 0) ? -1 : 1)) // 昇順
+
         const points: number[] = []
-        const results = sortScore
+
+        const sortResults = sortScore.concat(top)
+        const results = sortResults
             .map((ss, index) => {
-                const rank = sortScore.length - index
+                const rank = sortScore.length - index + 1
                 const point = calcScore(rank, ss.score || 0, points)
                 points.push(point)
                 const result: Result = {
@@ -223,6 +208,23 @@ export default function Home() {
         document.body.removeChild(link)
     }
 
+    /**
+     * トップ設定
+     * @param id
+     */
+    const setTop = (id: number) => {
+        const topScores = scores.map(score => {
+            score.isTop = false
+            if (score.id == id) {
+                score.score = undefined
+                score.isTop = true
+            }
+            return score
+        })
+        setScores(topScores)
+        setVerification()
+    }
+
     return (
         <Stack h={"100%"} p={3}>
             <HStack>
@@ -254,16 +256,30 @@ export default function Home() {
                                 defaultValue={player.name}
                                 onBlur={e => changePlayerName(player.id, e.target.value)}
                             />
+                            <Stack mx={3}>
+                                <Radio
+                                    name="topSelect"
+                                    isChecked={scores.filter(score => score.id == player.id)[0].isTop}
+                                    onClick={e => setTop(player.id)}
+                                />
+                            </Stack>
                             <Input
                                 p={1}
-                                w={"70%"}
+                                w={"50%"}
                                 type="number"
                                 key={scores.filter(score => score.id == player.id)[0].score}
                                 defaultValue={scores.filter(score => score.id == player.id)[0].score}
                                 onBlur={e => changeScore(player.id, e.target.value)}
+                                isDisabled={
+                                    scores.filter(score => score.id == player.id)[0].isTop ||
+                                    scores.filter(score => !score.isTop).length == 4
+                                }
+                                _disabled={{
+                                    bgColor: "gray.300",
+                                }}
                             />
-                            <Button w={"4.5rem"} onClick={e => deleteInput(player.id)}>
-                                clear
+                            <Button variant={"ghost"} onClick={e => deleteInput(player.id)}>
+                                <BsX />
                             </Button>
                         </HStack>
                     ))}
