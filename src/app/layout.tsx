@@ -1,4 +1,5 @@
 // app/layout.tsx
+"use client"
 import { Box } from "@chakra-ui/react"
 import { Providers } from "./providers"
 
